@@ -6,4 +6,5 @@
     -100 <= num1, num2 <= 100")
 
 (defn solution
-  [num1 num2])
+  [num1 num2]
+  (+ num1 num2))
