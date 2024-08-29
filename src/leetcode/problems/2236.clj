@@ -18,10 +18,18 @@
   ([val left]
    (make-tree-node val left nil))
   ([val left right]
-   (->TreeNode val left right)))
+   (->TreeNode val
+               (when left (make-tree-node left))
+               (when right (make-tree-node right)))))
+
+(defn seq-to-tree
+  [tree-seq]
+  (apply make-tree-node tree-seq))
 
 (defn solution
   [tree-seq]
   {:pre  [(= 3 (count tree-seq))
           (every? int? tree-seq)]}
-  )
+  (let [tree (seq-to-tree tree-seq)]
+    (= (:val tree)
+       (+ (:val (:left tree)) (:val (:right tree))))))
