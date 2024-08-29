@@ -8,7 +8,7 @@
     The tree consists only of the root, its left child, and its right child.
     -100 <= Node.val <= 100")
 
-(defrecord tree-node [val left right])
+(defrecord TreeNode [val left right])
 
 (defn make-tree-node
   ([]
@@ -18,7 +18,7 @@
   ([val left]
    (make-tree-node val left nil))
   ([val left right]
-   (->tree-node val left right)))
+   (->TreeNode val left right)))
 
 (defn solution
   [tree-seq]

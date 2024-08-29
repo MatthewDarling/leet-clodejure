@@ -6,7 +6,7 @@
     The number of nodes in the tree is in the range [0, 100].
     -100 <= Node.val <= 100")
 
-(defrecord tree-node [val left right])
+(defrecord TreeNode [val left right])
 
 (defn make-tree-node
   ([]
@@ -16,7 +16,7 @@
   ([val left]
    (make-tree-node val left nil))
   ([val left right]
-   (->tree-node val left right)))
+   (->TreeNode val left right)))
 
 (defn solution
   [tree-seq]
