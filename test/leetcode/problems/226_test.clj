@@ -12,3 +12,9 @@
 
 (t/deftest case3
   (t/is (= [] (sut/solution []))))
+
+(t/deftest my-cases
+  (t/is (= [1] (sut/solution [1]))
+        "No-op on single element collection")
+  (t/is (= [1 3 2 4] (sut/solution [1 2 3 4]))
+        "Handles an unbalanced tree"))
