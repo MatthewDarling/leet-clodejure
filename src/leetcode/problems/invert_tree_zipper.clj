@@ -96,6 +96,20 @@
          (iterate zip/right)
          (take-while some?))))
 
+(defn insert-or-append-child
+  "Like `clojure.zip/append-child`, but won't throw an exception if called on a leaf node.
+
+  I find the existing behaviour, that you can only append if there are existing
+  children, not very useful for programmatically building a tree. Admittedly,
+  that's tied to my definition of `branch?`, which answers 'is this currently a
+  branch?' while `clojure/zip` apparently thinks it means '*can this* be a
+  branch?'. What I have now works better for everything except `append-child`,
+  though, so here's a helper function."
+  [loc item]
+  (if (zip/branch? loc)
+    (zip/append-child loc item)
+    (zip/edit loc make-node [item])))
+
 ;;; Solution implementation
 (defn breadth-first-transform
   "Breadth-first searches a given `zipper`, and if `transform-loc` is provided,
@@ -117,6 +131,41 @@
          (recur (conj result current-loc)
                 (into (pop remaining-queue) child-nodes)))
        result))))
+
+(defn breadth-first-filter
+  "Like `filter`, but using a breadth-first search of the provided `zipper`.
+
+  `filter-loc` must be a function that receives a `clojure.zip` `loc` structure,
+  and returns a truthy value if you want to keep that `loc` in the output. A
+  `loc` is a vector with mandatory metadata and two elements: the `node`, and
+  the current zipper navigation data. You can filter on the node itself, and/or
+  the navigation data."
+  [zipper filter-loc]
+  (loop [result []
+         remaining-queue (conj clojure.lang.PersistentQueue/EMPTY zipper)]
+    (if (seq remaining-queue)
+      (let [current-loc (peek remaining-queue)
+            child-nodes (child-locs current-loc)]
+        (recur (if (filter-loc current-loc)
+                 (conj result current-loc)
+                 result)
+               (into (pop remaining-queue) child-nodes)))
+      result)))
+
+(defn has-two-children?
+  [loc]
+  (when (and loc (zip/branch? loc))
+    (some-> loc zip/children count (= 2))))
+
+(defn next-unbalanced-node
+  "Using a breadth-first search from the top of `zipper`, identify the next node
+  that doesn't have two children. In effect, this identifies the next insertion
+  point for building a balanced binary tree."
+  [zipper]
+  (-> zipper
+      top-of-tree
+      (breadth-first-filter (comp not has-two-children?))
+      first))
 
 (defn swap-children
   "Given a `TreeNode`, swap its `left` and `right` children for purposes of
@@ -144,16 +193,22 @@
 ;;    2,    7,
 ;;  1,3,    6,9]
 
+(defn seq->tree
+  [[root & children]]
+  (loop [tree-so-far (zip-wrapper root)
+         remaining-children children]
+    (if-not (seq remaining-children)
+      (top-of-tree tree-so-far)
+      (recur (-> tree-so-far
+                 next-unbalanced-node
+                 (insert-or-append-child (first remaining-children)))
+             (rest remaining-children)))))
+
 (defn solution
-  [tree]
-  (map (comp :val zip/node)
-       (breadth-first-transform tree invert-loc)))
+  [tree-seq]
+  (let [tree (seq->tree tree-seq)]
+    (map (comp :val zip/node)
+         (breadth-first-transform tree invert-loc))))
 
 (comment
-  (solution (-> (zip-wrapper 4)
-                (zip/edit make-node [2 7])
-                zip/down
-                (zip/edit make-node [1 3])
-                zip/right
-                (zip/edit make-node [6 9])
-                top-of-tree)))
+  (solution [4 2 7 1 3 6 9]))
