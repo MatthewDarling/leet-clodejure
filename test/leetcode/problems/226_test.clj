@@ -17,4 +17,10 @@
   (t/is (= [1] (sut/solution [1]))
         "No-op on single element collection")
   (t/is (= [1 3 2 4] (sut/solution [1 2 3 4]))
-        "Handles an unbalanced tree"))
+        "Handles an unbalanced tree")
+  (t/is (= [1
+            3,            2
+            7,     6,     5,     4
+            15 14, 13 12, 11 10, 9 8]
+           (sut/solution (vec (range 1 16))))
+        "Supports trees with more depth"))
