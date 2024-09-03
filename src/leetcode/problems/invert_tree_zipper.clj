@@ -113,9 +113,8 @@
           remaining-queue (conj clojure.lang.PersistentQueue/EMPTY zipper)]
      (if (seq remaining-queue)
        (let [current-loc (transform-loc (peek remaining-queue))
-             current-node (zip/node current-loc)
              child-nodes (child-locs current-loc)]
-         (recur (conj result current-node)
+         (recur (conj result current-loc)
                 (into (pop remaining-queue) child-nodes)))
        result))))
 
@@ -147,7 +146,8 @@
 
 (defn solution
   [tree]
-  (map :val (breadth-first-transform tree invert-loc)))
+  (map (comp :val zip/node)
+       (breadth-first-transform tree invert-loc)))
 
 (comment
   (solution (-> (zip-wrapper 4)
