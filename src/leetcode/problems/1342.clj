@@ -9,4 +9,12 @@
     0 <= num <= 10^6")
 
 (defn solution
-  [num])
+  [num]
+  (loop [step-count 0
+         current-num num]
+    (if (zero? current-num)
+      step-count
+      (recur (inc step-count)
+             (if (even? current-num)
+               (/ current-num 2)
+               (dec current-num))))))
