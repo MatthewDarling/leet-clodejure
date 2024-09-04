@@ -10,5 +10,13 @@
 
     1 <= n <= 10^4")
 
+(def compute-fns
+  [str str (constantly "Fizz") str (constantly "Buzz")
+   (constantly "Fizz") str str (constantly "Fizz") (constantly "Buzz")
+   str (constantly "Fizz") str str (constantly "FizzBuzz")])
+
+(def compute-cycle (cycle compute-fns))
+
 (defn solution
-  [num])
+  [num]
+  (map #(%1 %2) compute-cycle (range 1 (inc num))))
