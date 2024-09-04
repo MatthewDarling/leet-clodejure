@@ -11,4 +11,9 @@
 
 (defn solution
   [nums]
-  )
+  (reduce (fn [acc num]
+            (->> num
+                 (+ (or (last acc) 0))
+                 (conj acc)))
+          []
+          nums))
