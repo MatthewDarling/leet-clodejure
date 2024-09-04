@@ -14,4 +14,7 @@
     1 <= accounts[i][j] <= 100")
 
 (defn solution
-  [accounts])
+  [accounts]
+  (->> accounts
+       (map #(apply + %))
+       (apply max)))
