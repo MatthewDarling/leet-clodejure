@@ -6,7 +6,8 @@
   Constraints:
 
     The number of nodes in the list is in the range [1, 100].
-    1 <= Node.val <= 100")
+    1 <= Node.val <= 100"
+  (:require [clojure.math :as math]))
 
 (defrecord ListNode [val next])
 
@@ -27,4 +28,17 @@
             reversed-tail)))
 
 (defn solution
-  [linked-list])
+  [linked-list]
+  (let [unlinked (reduce conj
+                         []
+                         (->> linked-list
+                              (iterate :next)
+                              (take-while some?)))
+        half-count (-> unlinked
+                       count
+                       (/ 2)
+                       (math/round))
+        desired-middle (if (odd? (count unlinked))
+                         (dec half-count)
+                         half-count)]
+    (nth unlinked desired-middle)))
