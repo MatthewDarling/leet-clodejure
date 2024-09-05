@@ -16,5 +16,15 @@
   ([val next-node]
    (->ListNode val next-node)))
 
+(defn seq->linked-list
+  "Convert the provided `seq-to-link` into a linked list of `ListNode`s, in the
+  same order as the original seq."
+  [seq-to-link]
+  (let [[reversed-head & reversed-tail] (reverse seq-to-link)]
+    (reduce (fn [prev-node new-val]
+              (make-list-node new-val prev-node))
+            (make-list-node reversed-head)
+            reversed-tail)))
+
 (defn solution
   [linked-list])
