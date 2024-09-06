@@ -9,5 +9,16 @@
     1 <= ransomNote.length, magazine.length <= 10^5
     ransomNote and magazine consist of lowercase English letters.")
 
+(defn merge-only-matching-keys-with
+  "Like `merge-with`, but only keeps keys present in `map1`."
+  [f map1 map2]
+  (merge-with f map1 (select-keys map2 (keys map1))))
+
 (defn solution
-  [ransom-note magazine])
+  "Returns `true` if all letters of `ransom-note` are present in `magazine`.
+  Determined by subtracting the count of each letter in the respective strings."
+  [ransom-note magazine]
+  (let [ransom-freqs (frequencies ransom-note)
+        magazine-freqs (frequencies magazine)
+        missing-letters (merge-only-matching-keys-with - ransom-freqs magazine-freqs)]
+    (->> missing-letters vals (every? #(<= % 0)))))
