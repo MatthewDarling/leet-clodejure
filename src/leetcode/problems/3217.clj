@@ -30,5 +30,20 @@
             (make-list-node reversed-head)
             reversed-tail)))
 
+(defn linked-list-remove
+  "Return a vector of the `:val`s in `linked-list` for which
+  `(pred (:val ListNode))` returns logical false."
+  [pred linked-list]
+  (loop [output-vals []
+         remaining-list linked-list]
+    (if-not remaining-list
+      output-vals
+      (if-not (pred (:val remaining-list))
+        (recur (conj output-vals (:val remaining-list))
+               (:next remaining-list))
+        (recur output-vals (:next remaining-list))))))
+
 (defn solution
-  [nums-to-remove linked-list])
+  [nums-to-remove linked-list]
+  (let [remove-set (set nums-to-remove)]
+    (seq->linked-list (linked-list-remove remove-set linked-list))))
