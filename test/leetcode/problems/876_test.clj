@@ -25,4 +25,12 @@
         "A list with only one element returns that as the middle")
   (t/is (= (sut/make-list-node 2)
            (sut/solution (sut/seq->linked-list (range 1 3))))
-        "A list with two elements returns the last element"))
+        "A list with two elements returns the last element")
+  (let [test-input (sut/seq->linked-list (range 1 6))]
+      (t/is (= (sut/solution test-input)
+               (sut/pointer-ish-solution test-input))
+            "Both solutions return the same result for odd-length lists"))
+  (let [test-input (sut/seq->linked-list (range 1 7))]
+      (t/is (= (sut/solution test-input)
+               (sut/pointer-ish-solution test-input))
+            "Both solutions return the same result for even-length lists")))

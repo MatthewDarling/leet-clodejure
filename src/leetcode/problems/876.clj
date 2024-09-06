@@ -42,3 +42,17 @@
                          (dec half-count)
                          half-count)]
     (nth unlinked desired-middle)))
+
+(defn pointer-ish-solution
+  "Mimic the looping, pointer following approach that's traditionally used in
+  imperative languages for this problem. You have a 'slow pointer' that advances
+  one element at a time, and a 'fast pointer' that advances by two elements. The
+  loop is initialized with the slow pointer, aka `middle`, at the first element
+  and the fast pointer, aka `end`, at the second element."
+  [linked-list]
+  (loop [middle linked-list
+         end (:next linked-list)]
+    (if end
+      (recur (:next middle)
+             (some-> end :next :next))
+      middle)))
