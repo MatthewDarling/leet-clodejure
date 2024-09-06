@@ -13,4 +13,19 @@
     nums is sorted in non-decreasing order.")
 
 (defn solution
-  [nums-array])
+  "Edit the input array, `nums-array`, to overwrite consecutive duplicate values.
+  Returns the count of unique values.
+
+  A number of junk values will persist at the end of `nums-array` equal
+  to `(- (alength nums-array) counter)`."
+  [nums-array]
+  (loop [counter 1
+         idx 1]
+    (if (> (alength nums-array) idx)
+      (if (= (aget nums-array (dec idx))
+             (aget nums-array idx))
+        (recur counter (inc idx))
+        (do
+          (aset nums-array counter (aget nums-array idx))
+          (recur (inc counter) (inc idx))))
+      counter)))
